@@ -9,7 +9,7 @@ import java.text.*;
 import java.util.*;
 import java.io.*;
 
-public class RM6Network {
+public class Network {
     static {
         Locale.setDefault(Locale.ENGLISH);
     }
@@ -38,27 +38,21 @@ public class RM6Network {
     double resultOutputs[][]; // dummy init
     double output[];
     
-    double max1;
-    double max2;
-    double max3;
-    double max4;
-    double min1;
-    double min2;
-    double min3;
-    double min4;
+    double max1, max2, max3, max4;
+    double min1, min2, min3, min4;
 
     // for weight update all
     final HashMap<String, Double> weightUpdate = new HashMap<String, Double>();
 
     public static void main(String[] args) throws IOException
     {
-        RM6Network nn = new RM6Network(3, 4, 1, "qtrain10.txt", "rtrain.txt", "trealtrain.txt", "RM6train.txt");
+        Network nn = new Network(3, 4, 1, "flowMA.data", "rainfall.data", "tide.data", "salinity.data");
         int maxRuns = 50000;
         double minErrorCondition = 0.001;
         nn.run(maxRuns, minErrorCondition);
     }
 
-    public RM6Network(int input, int hidden, int output, String i1, String i2, String i3, String o1) throws IOException
+    public Network(int input, int hidden, int output, String i1, String i2, String i3, String o1) throws IOException
     {
         PrintWriter outFile = new PrintWriter(new FileWriter("maxminRM6.txt"));
         
@@ -101,37 +95,28 @@ public class RM6Network {
         for(int x = 0; x < input1.size(); x++)
         {
             if(input1.get(x) > max1)
-            {
                 max1 = input1.get(x);
-            }            
+
             if(input2.get(x) > max2)
-            {
                 max2 = input2.get(x);
-            }
+
             if(input3.get(x) > max3)
-            {
                 max3 = input3.get(x);
-            }
+
             if(output1.get(x) > max4)
-            {
                 max4 = output1.get(x);
-            }
+
             if(input1.get(x) < min1)
-            {
                 min1 = input1.get(x);
-            }
+
             if(input2.get(x) < min2)
-            {
                 min2 = input2.get(x);
-            }
+
             if(input3.get(x) < min3)
-            {
                 min3 = input3.get(x);
-            }
+
             if(output1.get(x) < min4)
-            {
                 min4 = output1.get(x);
-            }
         }
 
         inputs = new double [counter][3];
@@ -351,28 +336,30 @@ public class RM6Network {
         
         globalError /= counter;
         globalError = Math.sqrt(globalError);
-        printResult();
+        printResult("training.data");
         
         System.out.println("Root Mean Squared Error = " + globalError);
         System.out.println("##### EPOCH " + i+"\n");
-        printAllWeights();
+        printAllWeights("weights.data");
     }
     
-    void printResult()
-    {
-        System.out.println("RM 8 Training Results: ");
+    void printResult(String fileName) throws IOException {
+		PrintWriter outFile = new PrintWriter(new FileWriter(fileName));
+
+        System.out.println("Training Results written to file: " + fileName);
         for (int p = 0; p < inputs.length; p++) {
             for (int x = 0; x < layers[2]; x++) {
-                System.out.print((resultOutputs[p][x] * (max4 - min4) + min4));
+                outFile.print((resultOutputs[p][x] * (max4 - min4) + min4));
             }
-            System.out.println();
+            outFile.println();
         }
-        System.out.println();
+        outFile.println();
+		outFile.close();
     }
     
 
-    public void printAllWeights() throws IOException {
-        PrintWriter outFile = new PrintWriter(new FileWriter("weightsRM6.txt"));        
+    public void printAllWeights(String fileName) throws IOException {
+        PrintWriter outFile = new PrintWriter(new FileWriter(fileName));        
         System.out.println("printAllWeights");
         // weights for the hidden layer
         for (Neuron n : hiddenLayer) {

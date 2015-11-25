@@ -9,7 +9,7 @@
 import java.text.*;
 import java.util.*;
 import java.io.*;
-public class RM6Hindcast
+public class Hindcast
 {
     final ArrayList<Neuron> inputLayer = new ArrayList<Neuron>();
     final ArrayList<Neuron> hiddenLayer = new ArrayList<Neuron>();
@@ -34,11 +34,11 @@ public class RM6Hindcast
     
     public static void main(String[] args) throws IOException
     {
-        RM6Hindcast hindcast = new RM6Hindcast(3, 6, 1, "qtest10_temp.txt", "rtest_temp.txt", "ttest_temp.txt", "weights.txt", "maxmin.txt");
+        Hindcast hindcast = new Hindcast(3, 6, 1, "qtest10_temp.txt", "rtest_temp.txt", "ttest_temp.txt", "weights.txt", "maxmin.txt");
         hindcast.run();
     }
     
-    public RM6Hindcast(int input, int hidden, int output, String i1, String i2, String i3, String weight, String maxmin) throws IOException
+    public Hindcast(int input, int hidden, int output, String i1, String i2, String i3, String weight, String maxmin) throws IOException
     {
         int marker = 0;
         

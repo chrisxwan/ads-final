@@ -9,7 +9,7 @@
 import java.text.*;
 import java.util.*;
 import java.io.*;
-public class RM6Forecast
+public class Forecast
 {
     final ArrayList<Neuron> inputLayer = new ArrayList<Neuron>();
     final ArrayList<Neuron> hiddenLayer = new ArrayList<Neuron>();
@@ -41,11 +41,11 @@ public class RM6Forecast
         double r = in.nextDouble();
         System.out.println("What is the tide in cubic feet?");
         double t = in.nextDouble();
-        RM6Forecast forecast = new RM6Forecast(3, 4, 1, q, r, t, "weightsrm6.txt", "maxminrm6.txt");
+        Forecast forecast = new Forecast(3, 4, 1, q, r, t, "weightsrm6.txt", "maxminrm6.txt");
         forecast.run();
     }
     
-    public RM6Forecast(int input, int hidden, int output, double q, double r, double t, String weight, String maxmin) throws IOException
+    public Forecast(int input, int hidden, int output, double q, double r, double t, String weight, String maxmin) throws IOException
     {
         int marker = 0;
         
