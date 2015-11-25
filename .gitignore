@@ -1,2 +1,7 @@
 .gitignore
 training-data.csv
+salinity
+rainfall
+flow
+flowMA
+tide
