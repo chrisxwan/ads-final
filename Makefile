@@ -1,4 +1,6 @@
-all: data compile test
+default: all
+
+all: clean input compile test output
 
 compile: network hindcast forecast
 

@@ -358,14 +358,13 @@ public class Network {
     
 
     public void printAllWeights(String fileName) throws IOException {
+		System.out.println("Weights written to file: " + fileName);
         PrintWriter outFile = new PrintWriter(new FileWriter(fileName));        
-        System.out.println("printAllWeights");
         // weights for the hidden layer
         for (Neuron n : hiddenLayer) {
             ArrayList<Connection> connections = n.getAllInConnections();
             for (Connection con : connections) {
                 double w = con.getWeight();
-                System.out.println("n=" + n.id + " c=" + con.id + " w=" + w);
                 outFile.println(w);
             }
         }
@@ -374,13 +373,10 @@ public class Network {
             ArrayList<Connection> connections = n.getAllInConnections();
             for (Connection con : connections) {
                 double w = con.getWeight();
-                System.out.println("n=" + n.id + " c=" + con.id + " w=" + w);
                 outFile.println(w);
             }
         }
         System.out.println();
         outFile.close();
-        
-
     }
 }
