@@ -41,7 +41,7 @@ public class Forecast
         double r = in.nextDouble();
         System.out.println("What is the tide in cubic feet?");
         double t = in.nextDouble();
-        Forecast forecast = new Forecast(3, 4, 1, q, r, t, "weightsrm6.txt", "maxminrm6.txt");
+        Forecast forecast = new Forecast(3, 4, 1, q, r, t, "weights.data", "maxmin.data");
         forecast.run();
     }
     
@@ -188,7 +188,7 @@ public class Forecast
     
     public void printResult()
     {
-        System.out.println("Salinity Results for RM 6: ");
+        System.out.println("Predicted Salinity Result:");
         for(int p = 0; p < inputs.length; p++)
         {               
             for(int x = 0; x < layers[2]; x++)

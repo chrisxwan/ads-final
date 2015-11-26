@@ -34,7 +34,7 @@ public class Hindcast
     
     public static void main(String[] args) throws IOException
     {
-        Hindcast hindcast = new Hindcast(3, 4, 1, "flowMA.test", "rainfall.test", "tide.test", "weights.data", "maxmin.data");
+        Hindcast hindcast = new Hindcast(3, 5, 1, "flowMA.test", "rainfall.test", "tide.test", "weights.data", "maxmin.data");
         hindcast.run();
     }
     

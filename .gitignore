@@ -6,3 +6,4 @@ training-data.csv
 *.train
 *.test
 *.xlsx
+r2analysis

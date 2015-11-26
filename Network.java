@@ -46,7 +46,7 @@ public class Network {
 
     public static void main(String[] args) throws IOException
     {
-        Network nn = new Network(3, 4, 1, "flowMA.train", "rainfall.train", "tide.train", "salinity.train");
+        Network nn = new Network(3, 5, 1, "flowMA.train", "rainfall.train", "tide.train", "salinity.train");
         int maxRuns = 50000;
         double minErrorCondition = 0.001;
         nn.run(maxRuns, minErrorCondition);

@@ -1,6 +1,6 @@
 default: all
 
-all: clean input compile test output
+all: clean input compile train test output
 
 compile: network hindcast forecast
 
@@ -11,7 +11,7 @@ output:
 	python extract-output.py
 
 clean: 
-	$(RM) *.data *.class
+	$(RM) *.data *.class *.train *.test
 
 network:
 	javac Network.java
@@ -22,6 +22,9 @@ hindcast:
 forecast:
 	javac Forecast.java
 
-test:
+train:
 	java Network
+
+test:
+	java Hindcast
 
