@@ -1,32 +1,26 @@
 import csv
 
 trainingFile = 'training.data'
-datesFile = 'dates.data'
 testingFile = 'testing.data'
-salinityFile = 'salinity.data'
+datesTrainFile = 'dates.train'
+datesTestFile = 'dates.test'
+salinityTrainFile = 'salinity.train'
+salinityTestFile = 'salinity.test'
 
 training = []
-dates = []
 testing = []
-salinity = []
-"""
-with open(trainingFile) as f:
-	training = f.readlines()
-
-with open(datesFile) as f:
-	dates = dates.readlines()
-
-with open(testingFile) as f:
-	testing = f.readlines()
-
-with open(salinityFile) as f:
-	salinity = f.readlines()
-"""
+datesTrain = []
+datesTest = []
+salinityTrain = []
+salinityTest = []
 
 training = [line.strip('\n') for line in open(trainingFile)]
-dates = [line.strip('\n') for line in open(datesFile)]
 testing = [line.strip('\n') for line in open(testingFile)]
-salinity = [line.strip('\n') for line in open(salinityFile)]
+datesTrain = [line.strip('\n') for line in open(datesTrainFile)]
+datesTest = [line.strip('\n') for line in open(datesTestFile)]
+salinityTrain = [line.strip('\n') for line in open(salinityTrainFile)]
+salinityTest = [line.strip('\n') for line in open(salinityTestFile)]
+
 
 counter = 0
 trainingCSV = []
@@ -34,17 +28,19 @@ testingCSV = []
 
 for entry in training:
 	csvEntry = []
-	csvEntry.append(dates[counter])
+	csvEntry.append(datesTrain[counter])
 	csvEntry.append(float(entry))
-	csvEntry.append(salinity[counter])
+	csvEntry.append(salinityTrain[counter])
 	trainingCSV.append(csvEntry)
 	counter += 1
 
+counter = 0
+
 for entry in testing:
 	csvEntry = []
-	csvEntry.append(dates[counter])
+	csvEntry.append(datesTest[counter])
 	csvEntry.append(float(entry))
-	csvEntry.append(salinity[counter])
+	csvEntry.append(salinityTest[counter])
 	testingCSV.append(csvEntry)
 	counter += 1
 
