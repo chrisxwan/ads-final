@@ -3,3 +3,5 @@ training-data.csv
 *.data
 *.txt
 *.class
+*.train
+*.test

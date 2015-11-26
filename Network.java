@@ -46,7 +46,7 @@ public class Network {
 
     public static void main(String[] args) throws IOException
     {
-        Network nn = new Network(3, 4, 1, "flowMA.data", "rainfall.data", "tide.data", "salinity.data");
+        Network nn = new Network(3, 4, 1, "flowMA.train", "rainfall.train", "tide.train", "salinity.train");
         int maxRuns = 50000;
         double minErrorCondition = 0.001;
         nn.run(maxRuns, minErrorCondition);
@@ -54,7 +54,7 @@ public class Network {
 
     public Network(int input, int hidden, int output, String i1, String i2, String i3, String o1) throws IOException
     {
-        PrintWriter outFile = new PrintWriter(new FileWriter("maxminRM6.txt"));
+        PrintWriter outFile = new PrintWriter(new FileWriter("maxmin.data"));
         
         ArrayList<Double> input1 = new ArrayList<Double>();
         ArrayList<Double> input2 = new ArrayList<Double>();
@@ -353,7 +353,6 @@ public class Network {
             }
             outFile.println();
         }
-        outFile.println();
 		outFile.close();
     }
     

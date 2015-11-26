@@ -52,7 +52,6 @@ counter = 0
 for line in allData:
 	dates.write(line[0] + '\n')
 	salinity.write(line[4] + '\n')
-	if(counter < trainingCounter):
 	currMa = float(line[3])
 	flowQueue = [currMa] + flowQueue
 	flowSum += currMa

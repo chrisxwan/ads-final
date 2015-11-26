@@ -2,8 +2,11 @@ all: data compile test
 
 compile: network hindcast forecast
 
-data: 
-	python extract-data.py
+input: 
+	python extract-input.py
+
+output:
+	python extract-output.py
 
 clean: 
 	$(RM) *.data *.class

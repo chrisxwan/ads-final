@@ -34,7 +34,7 @@ public class Hindcast
     
     public static void main(String[] args) throws IOException
     {
-        Hindcast hindcast = new Hindcast(3, 6, 1, "qtest10_temp.txt", "rtest_temp.txt", "ttest_temp.txt", "weights.txt", "maxmin.txt");
+        Hindcast hindcast = new Hindcast(3, 4, 1, "flowMA.test", "rainfall.test", "tide.test", "weights.data", "maxmin.data");
         hindcast.run();
     }
     
@@ -188,7 +188,7 @@ public class Hindcast
         }
     }
     
-    public void run()
+    public void run() throws IOException
     {
         for(int p = 0; p < inputs.length; p++)
         {
@@ -198,20 +198,22 @@ public class Hindcast
             output = getOutput();
             resultOutputs[p] = output;
         }
-        printResult();
+        printResult("testing.data");
     }
     
-    public void printResult()
+    public void printResult(String fileName) throws IOException
     {
-        System.out.println("Hindcast Results for RM 9.1: ");
+		PrintWriter outFile = new PrintWriter(new FileWriter(fileName));
+        System.out.println("Hindcast Results for RM 9.1 stored in file " + fileName);
         for(int p = 0; p < inputs.length; p++)
         {   
             for(int x = 0; x < layers[2]; x++)
             {
-                System.out.print((resultOutputs[p][x] * (max4 - min4) + min4));
+                outFile.print((resultOutputs[p][x] * (max4 - min4) + min4));
             }
-            System.out.println();
+			outFile.println();
         }
+		outFile.close();
     }
         
 }
