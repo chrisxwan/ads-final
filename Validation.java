@@ -9,7 +9,7 @@
 import java.text.*;
 import java.util.*;
 import java.io.*;
-public class Hindcast
+public class Validation
 {
     final ArrayList<Neuron> inputLayer = new ArrayList<Neuron>();
     final ArrayList<Neuron> hiddenLayer = new ArrayList<Neuron>();
@@ -34,11 +34,11 @@ public class Hindcast
     
     public static void main(String[] args) throws IOException
     {
-        Hindcast hindcast = new Hindcast(3, 5, 1, "flowMA.test", "rainfall.test", "tide.test", "weights.data", "maxmin.data");
-        hindcast.run();
+        Validation validation = new Validation(3, 5, 1, "flowMA.test", "rainfall.test", "tide.test", "weights.data", "maxmin.data");
+        validation.run();
     }
     
-    public Hindcast(int input, int hidden, int output, String i1, String i2, String i3, String weight, String maxmin) throws IOException
+    public Validation(int input, int hidden, int output, String i1, String i2, String i3, String weight, String maxmin) throws IOException
     {
         int marker = 0;
         

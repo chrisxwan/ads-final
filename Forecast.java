@@ -41,7 +41,7 @@ public class Forecast
         double r = in.nextDouble();
         System.out.println("What is the tide in cubic feet?");
         double t = in.nextDouble();
-        Forecast forecast = new Forecast(3, 4, 1, q, r, t, "weights.data", "maxmin.data");
+        Forecast forecast = new Forecast(3, 5, 1, q, r, t, "weights.data", "maxmin.data");
         forecast.run();
     }
     

@@ -27,7 +27,7 @@ public class Network {
 
     final double epsilon = 0.000000001;
 
-    final double learningRate = 0.3f;
+    final double learningRate = 0.5f;
     final double momentum = 0.1f;
 
     // Inputs for xor problem
@@ -337,9 +337,7 @@ public class Network {
         globalError /= counter;
         globalError = Math.sqrt(globalError);
         printResult("training.data");
-        
-        System.out.println("Root Mean Squared Error = " + globalError);
-        System.out.println("##### EPOCH " + i+"\n");
+        System.out.println();
         printAllWeights("weights.data");
     }
     

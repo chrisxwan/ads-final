@@ -2,7 +2,7 @@ default: all
 
 all: clean input compile train test output
 
-compile: network hindcast forecast
+compile: network validation forecast
 
 input: 
 	python extract-input.py
@@ -16,8 +16,8 @@ clean:
 network:
 	javac Network.java
 
-hindcast:
-	javac Hindcast.java
+validation:
+	javac Validation.java
 
 forecast:
 	javac Forecast.java
@@ -26,5 +26,6 @@ train:
 	java Network
 
 test:
-	java Hindcast
+	java Validation
+
 

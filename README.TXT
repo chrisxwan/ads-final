@@ -1,1 +1,23 @@
 Automated Decision Systems Final Project
+
+Christopher Wan
+
+The St. Lucie River in South Florida is a naturally brackish river that sustains a very unique ecosystem. Data were obtained from the South Florida Water Management District on salinity levels in the St. Lucie River at a location known as the US-1 bridge. At this location, salinity levels below 10 Practical Salinity Units (psu) results in the death of organisms that are intolerant to freshwater. When the salinity levels do become too low, the South Florida Water Management District is able to decrease the amount of freshwater inflow coming in to the St. Lucie River from Lake Okeechobee and thus prevent the salinity levels from going any lower. It is important to note, though, that Lake Okeechobee does need to be drained periodically, especially during the "wet season," because high water levels in the lake are dangerous.
+
+The objective of this study is to develop Artificial Neural Networks (ANNs) to predict estuarine salinity given freshwater inflows, rainfall, and tide using the St. Lucie River as a case study for the evaluation. ANNs is a programming logic model using multivariable calculus and an algorithmic “learning” process to simulate various functions related with information processing by imitating how neurons in the brain work. Number of hidden neurons and the values of the learning rate and momentum which comprise ANNs structure depend dynamically on the process it is modeling.
+
+In the St. Lucie River, higher levels of freshwater inflow and higher levels of rainfall will lead to decreased salinity while higher levels of tide will result in increased salinity; however, the exact levels of salinity change are not always predictable, which makes ANNs an ideal tool for modeling and decision making. The neural network that I developed has 3 input neurons (10-day moving average flow (in cubic feet per second), 5-day moving average rainfall level (in millimeters), and tide level (in cubic feet)) and 1 output neuron (salinity level at US-1 bridge (in psu)), and based on various testing, there are 5 hidden neurons with a learning rate of 0.3 and a momentum of 0.1. 
+
+I have included the data file ("training-data.csv") along with a Python script ("extract-input.py") to grab all of the training and testing data and to write them to files usable by the neural network. To obtain the training and testing data, I simply split the original csv into two halves -- the second half is the training data, and the first half is the testing data.
+
+I have included the Java program for the neural network ("Network.java"), which TRAINS the networks with the specified inputs, outputs, learning rate, and momentum, and it writes the weights of the network to the file "weights.data". It then writes the predicted salinity results from training to the file "salinity.train"
+
+I have included the Java program to TEST the network ("Validation.java"), which takes the weights in "weights.data" and the test inputs. It then writes the predicted salinity results from testing to the file "salinity.test"
+
+I have included the Python script ("extract-output.py") to evaluate the accuracy of the training and testing by outputting the R^2 values of each. Although every run of the neural network will be different, I obtained a training R^2 value of 0.883 and a testing R^2 value of 0.827. These values are encouraging, as they suggest that the neural network was able to learn the salinity process in the St. Lucie River Basin with success. The Python script also creates the files "training-results.csv" and "testing-results.csv" with data comparing the observed salinity and predicted salinity by the network for any given date within the training or testing periods.
+
+Finally, I have included the Java program ("Forecast.java") to forecast salinity given the inputs of flow, rainfall, and tide. It outputs the predicted salinity in psu and gives a decision on whether to increase or decrease freshwater flows into the river. Although it is unable to explain why it made its decision with 100% certainty (since it is a "black box solution"), it will try to give at least some sort of explanation for why salinity values are too low (or too high). 
+
+I have included the Makefile for this project. To run everything from beginning to end, simply run "make" and everything should be good! Be patient, it takes about 2 minutes for make to complete.
+
+After running make, you can start forecasting salinity and making decisions by running "java Forecast"
