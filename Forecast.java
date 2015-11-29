@@ -1,6 +1,6 @@
 
 /**
- * This class imports the weights learned from the RM6Network class and builds 
+ * This class imports the weights learned from the Network class and builds 
  * the Artificial Neural Network corresponding to those weights. It allows users to
  * forecast the salinity at RM6 given input prompts.
  * 
@@ -35,11 +35,11 @@ public class Forecast
     public static void main(String[] args) throws IOException
     {
         Scanner in = new Scanner(System.in);
-        System.out.println("What is the flow in cubic feet per second? ");
+        System.out.println("What is the 10-day moving average flow in cubic feet per second? ");
         double q = in.nextDouble();
-        System.out.println("What is the rainfall in millimeters?");
+        System.out.println("What is the 5-day moving average rainfall level in millimeters?");
         double r = in.nextDouble();
-        System.out.println("What is the tide in cubic feet?");
+        System.out.println("What is the tide level in cubic feet?");
         double t = in.nextDouble();
         Forecast forecast = new Forecast(3, 5, 1, q, r, t, "weights.data", "maxmin.data");
         forecast.run();
@@ -189,14 +189,23 @@ public class Forecast
     public void printResult()
     {
         System.out.println("Predicted Salinity Result:");
+		double salinity = 0.0;
         for(int p = 0; p < inputs.length; p++)
         {               
             for(int x = 0; x < layers[2]; x++)
             {
-                System.out.print((resultOutputs[p][x] * (max4 - min4) + min4) + " psu ");
+				salinity = resultOutputs[p][x] * (max4-min4) + min4;
+                System.out.print(salinity + " psu ");
             }
             System.out.println();
         }
+		if(salinity < 10) {
+			System.out.println("The salinity is too low, which will result in the death of organisms that are intolerant to freshwater. This may be caused by an excess of freshwater inflows or rainfall, or unusually low tide levels. To increase salinity, less water should be discharged from Lake Okeechobee.");
+		} else if(salinity > 10 && salinity < 30) {
+			System.out.println("The salinity is at optimum levels to sustain the ecosystem.");
+		} else {
+			System.out.println("The salinity is too high, which will result in the death of organisms that cannot sustain life in salinity levels that are beyond that of brackish water. This may be caused by a lack of freshwater inflows or rainfall, or unusually high tide levels. To decrease salinity, more water should be discharged from Lake Okeechobee.");
+		}
     }
         
 }
