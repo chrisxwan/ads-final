@@ -1,5 +1,4 @@
 .gitignore
-training-data.csv
 *.data
 *.txt
 *.class
