@@ -9,8 +9,7 @@
 import java.text.*;
 import java.util.*;
 import java.io.*;
-public class Validation
-{
+public class Validation {
     final ArrayList<Neuron> inputLayer = new ArrayList<Neuron>();
     final ArrayList<Neuron> hiddenLayer = new ArrayList<Neuron>();
     final ArrayList<Neuron> outputLayer = new ArrayList<Neuron>();
@@ -23,78 +22,63 @@ public class Validation
     final double learningRate = 1f;
     final double momentum = 0.1f;
     
-    double max1;
-    double max2;
-    double max3;
-    double max4;
-    double min1;
-    double min2;
-    double min3;
-    double min4;
+    double flowMax, rainfallMax, tideMax, salinityMax;
+    double flowMin, rainfallMin, tideMin, salinityMin;
     
-    public static void main(String[] args) throws IOException
-    {
+    public static void main(String[] args) throws IOException {
         Validation validation = new Validation(3, 5, 1, "flowMA.test", "rainfall.test", "tide.test", "weights.data", "maxmin.data");
         validation.run();
     }
     
-    public Validation(int input, int hidden, int output, String i1, String i2, String i3, String weight, String maxmin) throws IOException
-    {
+    public Validation(int input, int hidden, int output, String i1, String i2, String i3, String weight, String maxminStr) throws IOException {
         int marker = 0;
         
-        ArrayList<Double> input1 = new ArrayList<Double>();
-        ArrayList<Double> input2 = new ArrayList<Double>();
-        ArrayList<Double> input3 = new ArrayList<Double>();
+        ArrayList<Double> flow = new ArrayList<Double>();
+        ArrayList<Double> rainfall = new ArrayList<Double>();
+        ArrayList<Double> tide = new ArrayList<Double>();
         ArrayList<Double> weights = new ArrayList<Double>();
-        ArrayList<Double> mm = new ArrayList<Double>();
-        
-        Scanner inText1 = new Scanner(new File(i1));
-        Scanner inText2 = new Scanner(new File(i2));
-        Scanner inText3 = new Scanner(new File(i3));
-        Scanner inText4 = new Scanner(new File(weight));
-        Scanner inText5 = new Scanner(new File(maxmin));
+        ArrayList<Double> maxmin = new ArrayList<Double>();
+
+		// Initialize Scanners to read from appropriate files
+        Scanner flowFile = new Scanner(new File(i1));
+        Scanner rainfallFile = new Scanner(new File(i2));
+        Scanner tideFile = new Scanner(new File(i3));
+        Scanner weightsFile = new Scanner(new File(weight));
+        Scanner maxminFile = new Scanner(new File(maxminStr));
         
         int counter = 0;
-
-        while(inText1.hasNext())
-        {
-            input1.add(inText1.nextDouble());
+		
+		// Read from files
+        while(flowFile.hasNext()) {
+            flow.add(flowFile.nextDouble());
             counter++;
         }
-        while(inText2.hasNext())
-        {
-            input2.add(inText2.nextDouble());
-        }        
-        while(inText3.hasNext())
-        {
-            input3.add(inText3.nextDouble());
-        }
-        while(inText4.hasNext())
-        {
-            weights.add(inText4.nextDouble());
-        }
-        while(inText5.hasNext())
-        {
-            mm.add(inText5.nextDouble());
-        }
+        while(rainfallFile.hasNext())
+            rainfall.add(rainfallFile.nextDouble());
+        while(tideFile.hasNext())
+            tide.add(tideFile.nextDouble());
+        while(weightsFile.hasNext())
+            weights.add(weightsFile.nextDouble());
+        while(maxminFile.hasNext())
+            maxmin.add(maxminFile.nextDouble());
         
-        max1 = mm.get(0);
-        max2 = mm.get(1);
-        max3 = mm.get(2);
-        max4 = mm.get(3);
-        min1 = mm.get(4);
-        min2 = mm.get(5);
-        min3 = mm.get(6);
-        min4 = mm.get(7);
+		// Initialize all max and mins
+        flowMax = maxmin.get(0);
+        rainfallMax = maxmin.get(1);
+        tideMax = maxmin.get(2);
+        salinityMax = maxmin.get(3);
+        flowMin = maxmin.get(4);
+        rainfallMin = maxmin.get(5);
+        tideMin = maxmin.get(6);
+        salinityMin = maxmin.get(7);
         
         inputs = new double [counter][3];
         resultOutputs = new double[counter][1];
                 
-        for(int x = 0; x < counter; x++)
-        {
-            inputs[x][0] = (input1.get(x) - min1) / (max1 - min1);
-            inputs[x][1] = (input2.get(x) - min2) / (max2 - min2);
-            inputs[x][2] = (input3.get(x) - min3) / (max3 - min3);
+        for(int x = 0; x < counter; x++) {
+            inputs[x][0] = (flow.get(x) - flowMin) / (flowMax - flowMin);
+            inputs[x][1] = (rainfall.get(x) - rainfallMin) / (rainfallMax - rainfallMin);
+            inputs[x][2] = (tide.get(x) - tideMin) / (tideMax - tideMin);
         }
         
         
@@ -119,7 +103,6 @@ public class Validation
                     hiddenLayer.add(neuron);
                 }
             }
-
             else if (i == 2) { // output layer
                 for (int j = 0; j < layers[i]; j++) {
                     Neuron neuron = new Neuron();
@@ -132,11 +115,9 @@ public class Validation
             }
         }
 
-        for(Neuron neuron : hiddenLayer)
-        {
+        for(Neuron neuron : hiddenLayer) {
             ArrayList<Connection> connections = neuron.getAllInConnections();
-            for(Connection conn : connections)
-            {
+            for(Connection conn : connections) {
                 double newWeight = weights.get(marker);
                 conn.setWeight(newWeight);
                 marker++;
@@ -158,40 +139,27 @@ public class Validation
     
     }
 
-    public void setInput(double inputs[])
-    {
+    public void setInput(double inputs[]) {
         for(int i = 0; i < inputLayer.size(); i++)
-        {
             inputLayer.get(i).setOutput(inputs[i]);
-        }
     }
     
-    public double[] getOutput()
-    {
+    public double[] getOutput() {
         double[] outputs = new double[outputLayer.size()];
         for(int i = 0; i < outputLayer.size(); i++)
-        {
             outputs[i] = outputLayer.get(i).getOutput();
-        }
         return outputs;
     }
     
-    public void activate()
-    {
+    public void activate() {
         for(Neuron n : hiddenLayer)
-        {
             n.calculateOutput();
-        }
         for(Neuron n : outputLayer)
-        {
             n.calculateOutput();
-        }
     }
     
-    public void run() throws IOException
-    {
-        for(int p = 0; p < inputs.length; p++)
-        {
+    public void run() throws IOException {
+        for(int p = 0; p < inputs.length; p++) {
             setInput(inputs[p]);
             activate();
             
@@ -201,19 +169,14 @@ public class Validation
         printResult("testing.data");
     }
     
-    public void printResult(String fileName) throws IOException
-    {
+    public void printResult(String fileName) throws IOException {
 		PrintWriter outFile = new PrintWriter(new FileWriter(fileName));
-        System.out.println("Hindcast Results for RM 9.1 stored in file " + fileName);
-        for(int p = 0; p < inputs.length; p++)
-        {   
+        System.out.println("Testing Results stored in file " + fileName + "\n");
+        for(int p = 0; p < inputs.length; p++) {   
             for(int x = 0; x < layers[2]; x++)
-            {
-                outFile.print((resultOutputs[p][x] * (max4 - min4) + min4));
-            }
+                outFile.print((resultOutputs[p][x] * (salinityMax - salinityMin) + salinityMin));
 			outFile.println();
         }
 		outFile.close();
     }
-        
 }

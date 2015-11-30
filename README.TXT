@@ -21,3 +21,5 @@ Finally, I have included the Java program ("Forecast.java") to forecast salinity
 I have included the Makefile for this project. To run everything from beginning to end, simply run "make" and everything should be good! Be patient, it takes about 2 minutes for make to complete.
 
 After running make, you can start forecasting salinity and making decisions by running "java Forecast"
+
+*** NOTE: *** I had previous done work with Artificial Neural Networks in modeling salinity in the Loxahatchee River, a freshwater river in South Florida. This project is different because I made the entire process of training and testing the network more automated by using Python to extract the input and output data accordingly. Although I used ANNs to model to measure a similar process (salinity), I applied them to an entirely different location, the St. Lucie River. I used entirely new data (inputs and outputs), and I also modified and optimized the ANN Java code to be more succinct.

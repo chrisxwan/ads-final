@@ -1,8 +1,9 @@
-/*
- * RM6Network is the artificial neural network that learns the salinity
- * process for River Mile 6 in the Loxahatchee River.
- * 
+/* Network.java
  * @author Christopher Wan
+ *
+ * Artificial neural network that learns the salinity
+ * process for the St. Lucie River at the US-1 bridge.
+ * 
  * 
  */
 import java.text.*;
@@ -14,7 +15,6 @@ public class Network {
         Locale.setDefault(Locale.ENGLISH);
     }
 
-    final boolean isTrained = false;
     final DecimalFormat df;
     final Random rand = new Random();
     final ArrayList<Neuron> inputLayer = new ArrayList<Neuron>();
@@ -23,100 +23,97 @@ public class Network {
     final Neuron bias = new Neuron();
     final int[] layers;
     final int randomWeightMultiplier = 1;
-    PrintWriter result = new PrintWriter(new FileWriter("results.txt"));
 
     final double epsilon = 0.000000001;
 
     final double learningRate = 0.5f;
     final double momentum = 0.1f;
 
-    // Inputs for xor problem
+    // Inputs 
     final double inputs[][];
 
-    // Corresponding outputs, xor training data
+    // Corresponding outputs
     final double expectedOutputs[][];
     double resultOutputs[][]; // dummy init
     double output[];
     
-    double max1, max2, max3, max4;
-    double min1, min2, min3, min4;
+	// weight the inputs and output with the equation:
+	// (input - min) / (max - min)
+    double flowMax, rainfallMax, tideMax, salinityMax;
+    double flowMin, rainfallMin, tideMin, salinityMin;
 
     // for weight update all
     final HashMap<String, Double> weightUpdate = new HashMap<String, Double>();
 
-    public static void main(String[] args) throws IOException
-    {
+    public static void main(String[] args) throws IOException {
         Network nn = new Network(3, 5, 1, "flowMA.train", "rainfall.train", "tide.train", "salinity.train");
-        int maxRuns = 50000;
-        double minErrorCondition = 0.001;
+        int maxRuns = 50000; // max # of runs for the neural network to train
+        double minErrorCondition = 0.001; // stop training if this error is achieved
         nn.run(maxRuns, minErrorCondition);
     }
 
-    public Network(int input, int hidden, int output, String i1, String i2, String i3, String o1) throws IOException
-    {
+    public Network(int input, int hidden, int output, String i1, String i2, String i3, String o1) throws IOException {
         PrintWriter outFile = new PrintWriter(new FileWriter("maxmin.data"));
         
-        ArrayList<Double> input1 = new ArrayList<Double>();
-        ArrayList<Double> input2 = new ArrayList<Double>();
-        ArrayList<Double> input3 = new ArrayList<Double>();
-        ArrayList<Double> output1 = new ArrayList<Double>();
+        ArrayList<Double> flow = new ArrayList<Double>();
+        ArrayList<Double> rainfall = new ArrayList<Double>();
+        ArrayList<Double> tide = new ArrayList<Double>();
+        ArrayList<Double> salinity = new ArrayList<Double>();
         
-        Scanner inText1 = new Scanner(new File(i1));
-        Scanner inText2 = new Scanner(new File(i2));
-        Scanner inText3 = new Scanner(new File(i3));
-        Scanner inText6 = new Scanner(new File(o1));
+		// Initialize Scanners to read in from appropriate files
+        Scanner flowFile = new Scanner(new File(i1));
+        Scanner rainfallFile = new Scanner(new File(i2));
+        Scanner tideFile = new Scanner(new File(i3));
+        Scanner salinityFile = new Scanner(new File(o1));
         
         int counter = 0;
-        max1 = Integer.MIN_VALUE;
-        max2 = Integer.MIN_VALUE;
-        max3 = Integer.MIN_VALUE;
-        max4 = Integer.MIN_VALUE;
-        min1 = Integer.MAX_VALUE;
-        min2 = Integer.MAX_VALUE;
-        min3 = Integer.MAX_VALUE;
-        min4 = Integer.MAX_VALUE;
-        while(inText1.hasNext())
+		// Initialize all max and min values
+        flowMax = Integer.MIN_VALUE;
+        rainfallMax = Integer.MIN_VALUE;
+        tideMax = Integer.MIN_VALUE;
+        salinityMax = Integer.MIN_VALUE;
+        flowMin = Integer.MAX_VALUE;
+        rainfallMin = Integer.MAX_VALUE;
+        tideMin = Integer.MAX_VALUE;
+        salinityMin = Integer.MAX_VALUE;
+
+		// Find all max and min of data
+        while(flowFile.hasNext())
+            flow.add(flowFile.nextDouble());
+        while(rainfallFile.hasNext())
+            rainfall.add(rainfallFile.nextDouble());
+        while(tideFile.hasNext())
+            tide.add(tideFile.nextDouble());
+        while(salinityFile.hasNext())
         {
-            input1.add(inText1.nextDouble());
-        }
-        while(inText2.hasNext())
-        {
-            input2.add(inText2.nextDouble());
-        }
-        while(inText3.hasNext())
-        {
-            input3.add(inText3.nextDouble());
-        }
-        while(inText6.hasNext())
-        {
-            output1.add(inText6.nextDouble());        
+            salinity.add(salinityFile.nextDouble());        
             counter++;
         }
-        for(int x = 0; x < input1.size(); x++)
+        for(int x = 0; x < flow.size(); x++)
         {
-            if(input1.get(x) > max1)
-                max1 = input1.get(x);
+            if(flow.get(x) > flowMax)
+                flowMax = flow.get(x);
 
-            if(input2.get(x) > max2)
-                max2 = input2.get(x);
+            if(rainfall.get(x) > rainfallMax)
+                rainfallMax = rainfall.get(x);
 
-            if(input3.get(x) > max3)
-                max3 = input3.get(x);
+            if(tide.get(x) > tideMax)
+                tideMax = tide.get(x);
 
-            if(output1.get(x) > max4)
-                max4 = output1.get(x);
+            if(salinity.get(x) > salinityMax)
+                salinityMax = salinity.get(x);
 
-            if(input1.get(x) < min1)
-                min1 = input1.get(x);
+            if(flow.get(x) < flowMin)
+                flowMin = flow.get(x);
 
-            if(input2.get(x) < min2)
-                min2 = input2.get(x);
+            if(rainfall.get(x) < rainfallMin)
+                rainfallMin = rainfall.get(x);
 
-            if(input3.get(x) < min3)
-                min3 = input3.get(x);
+            if(tide.get(x) < tideMin)
+                tideMin = tide.get(x);
 
-            if(output1.get(x) < min4)
-                min4 = output1.get(x);
+            if(salinity.get(x) < salinityMin)
+                salinityMin = salinity.get(x);
         }
 
         inputs = new double [counter][3];
@@ -124,13 +121,13 @@ public class Network {
         resultOutputs = new double[counter][1];
         
         
-        
+        // Weight the data using the corresponding max and min
         for(int x = 0; x < counter; x++)
         {
-            inputs[x][0] = (input1.get(x) - min1) / (max1 - min1);
-            inputs[x][1] = (input2.get(x) - min2) / (max2 - min2);
-            inputs[x][2] = (input3.get(x) - min3) / (max3 - min3);
-            expectedOutputs[x][0] = (output1.get(x) - min4) / (max4 - min4);
+            inputs[x][0] = (flow.get(x) - flowMin) / (flowMax - flowMin);
+            inputs[x][1] = (rainfall.get(x) - rainfallMin) / (rainfallMax - rainfallMin);
+            inputs[x][2] = (tide.get(x) - tideMin) / (tideMax - tideMin);
+            expectedOutputs[x][0] = (salinity.get(x) - salinityMin) / (salinityMax - salinityMin);
             resultOutputs[x][0] = -1.0;
         }
                      
@@ -138,8 +135,8 @@ public class Network {
         df = new DecimalFormat("#.0#");
 
         /**
-         * Create all neurons and connections Connections are created in the
-         * neuron class
+         * Create all neurons and connections.
+		 * Connections are created in the neuron class.
          */
         for (int i = 0; i < layers.length; i++) {
             if (i == 0) { // input layer
@@ -184,14 +181,19 @@ public class Network {
             }
         }
         
-        outFile.println(max1);
-        outFile.println(max2);
-        outFile.println(max3);
-        outFile.println(max4);
-        outFile.println(min1);
-        outFile.println(min2);
-        outFile.println(min3);
-        outFile.println(min4);
+
+		/** Write all of the max and min to a separate file so they can be used by
+		  * Validation.java and Forecast.java
+		  */
+
+        outFile.println(flowMax);
+        outFile.println(rainfallMax);
+        outFile.println(tideMax);
+        outFile.println(salinityMax);
+        outFile.println(flowMin);
+        outFile.println(rainfallMin);
+        outFile.println(tideMin);
+        outFile.println(salinityMin);
         outFile.close();
         
         // reset id counters
@@ -202,14 +204,12 @@ public class Network {
 
     // random
     double getRandom() {
-        return randomWeightMultiplier * (rand.nextDouble() * 2 - 1); // [-1;1[
+        return randomWeightMultiplier * (rand.nextDouble() * 2 - 1);
     }
 
-    /**
+    /** Set all the inputs to the neural network
      * 
-     * @param inputs
-     *            There is equally many neurons in the input layer as there are
-     *            in input variables
+     * @param inputs: Set all the inputs
      */
     public void setInput(double inputs[]) {
         for (int i = 0; i < inputLayer.size(); i++) {
@@ -217,6 +217,7 @@ public class Network {
         }
     }
 
+	/** Get the outputs for a run of the neural network */
     public double[] getOutput() {
         double[] outputs = new double[outputLayer.size()];
         for (int i = 0; i < outputLayer.size(); i++)
@@ -225,8 +226,7 @@ public class Network {
     }
 
     /**
-     * Calculate the output of the neural network based on the input The forward
-     * operation
+     * Calculate the output of the neural network based on the input
      */
     public void activate() {
         for (Neuron n : hiddenLayer)
@@ -238,10 +238,8 @@ public class Network {
     /**
      * all output propagate back
      * 
-     * @param expectedOutput
-     *            first calculate the partial derivative of the error with
-     *            respect to each of the weight leading into the output neurons
-     *            bias is also updated here
+     * @param expectedOutput: first calculate the partial derivative of the error with
+     * respect to each of the weight leading into the output neurons bias is also updated here
      */
     public void applyBackpropagation(double expectedOutput[]) {
 
@@ -300,6 +298,10 @@ public class Network {
         }
     }
 
+	/** Train the neural network and write the results to files.
+	 * @param maxSteps: max number of trials for the neural network to run
+	 * @param inError: minimum error such that once achieved, the network stops running
+	 */
     void run(int maxSteps, double minError) throws IOException {
         int i;
         int counter = 0;
@@ -316,10 +318,8 @@ public class Network {
                 output = getOutput();
                 resultOutputs[p] = output;
                 
-                if(i == maxSteps - 1)
-                {
-                    for (int j = 0; j < expectedOutputs[p].length; j++)
-                    {
+                if(i == maxSteps - 1) {
+                    for (int j = 0; j < expectedOutputs[p].length; j++) {
                         double err = (Math.pow(output[j] - expectedOutputs[p][j], 2));
                         globalError += err;
                         counter++;
@@ -340,21 +340,26 @@ public class Network {
         System.out.println();
         printAllWeights("weights.data");
     }
-    
+
+
+    /** Print the predicted salinity results to a a file
+	  * @param fileName: file to write to
+	  */
     void printResult(String fileName) throws IOException {
 		PrintWriter outFile = new PrintWriter(new FileWriter(fileName));
 
         System.out.println("Training Results written to file: " + fileName);
         for (int p = 0; p < inputs.length; p++) {
-            for (int x = 0; x < layers[2]; x++) {
-                outFile.print((resultOutputs[p][x] * (max4 - min4) + min4));
-            }
+            for (int x = 0; x < layers[2]; x++)
+                outFile.print((resultOutputs[p][x] * (salinityMax - salinityMin) + salinityMin));
             outFile.println();
         }
 		outFile.close();
     }
     
-
+	/** Print all of the weights from the trained neural network to a file
+	  * @param fileName: file to write to
+	  */
     public void printAllWeights(String fileName) throws IOException {
 		System.out.println("Weights written to file: " + fileName);
         PrintWriter outFile = new PrintWriter(new FileWriter(fileName));        
