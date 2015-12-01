@@ -1,11 +1,10 @@
-
 /**
- * This class imports the weights learned from the Network class and builds 
- * the Artificial Neural Network corresponding to those weights. It allows users to
- * forecast the salinity at RM6 given input prompts.
- * 
- * @author Christopher Wan 
- */
+  * This class imports the weights learned from the Network class and builds 
+  * the Artificial Neural Network corresponding to those weights. It allows users to
+  * forecast the salinity at RM6 given input prompts.
+  * 
+  * @author Christopher Wan 
+  */
 import java.text.*;
 import java.util.*;
 import java.io.*;
@@ -20,20 +19,11 @@ public class Forecast
     final double inputs[][];
     double[][] resultOutputs;
     double[] output;
-    final double learningRate = 0.8f;
-    final double momentum = 0.1f;
     
-    double max1;
-    double max2;
-    double max3;
-    double max4;
-    double min1;
-    double min2;
-    double min3;
-    double min4;
+    double flowMax, rainfallMax, tideMax, salinityMax;
+    double flowMin, rainfallMin, tideMin, salinityMin;
     
-    public static void main(String[] args) throws IOException
-    {
+    public static void main(String[] args) throws IOException {
         Scanner in = new Scanner(System.in);
         System.out.println("What is the 10-day moving average flow in cubic feet per second? ");
         double q = in.nextDouble();
@@ -45,43 +35,48 @@ public class Forecast
         forecast.run();
     }
     
-    public Forecast(int input, int hidden, int output, double q, double r, double t, String weight, String maxmin) throws IOException
-    {
+	/** 
+	  * Object to forecast salinity given the appropriate inputs
+	  * @param input: # of input neurons
+	  * @param hidden: # of hidden neurons
+	  * @param output: # of output neurons
+	  * @param q: 10-day moving average for flow
+	  * @param r: 5-day moving average for rainfall
+	  * @param t: tide levels
+	  * @param weight: String for name of file to read weights
+	  * @param maxminStr: String for name of file to read mins and maxes of data
+	  */
+    public Forecast(int input, int hidden, int output, double q, double r, double t, String weight, String maxminStr) throws IOException {
         int marker = 0;
         
         ArrayList<Double> weights = new ArrayList<Double>();
-        ArrayList<Double> mm = new ArrayList<Double>();
+        ArrayList<Double> maxmin = new ArrayList<Double>();
         
-        Scanner inText4 = new Scanner(new File(weight));
-        Scanner inText5 = new Scanner(new File(maxmin));
+        Scanner weightsFile = new Scanner(new File(weight));
+        Scanner maxminFile = new Scanner(new File(maxminStr));
         
 
-        while(inText4.hasNext())
-        {
-            weights.add(inText4.nextDouble());
-        }
-        while(inText5.hasNext())
-        {
-            mm.add(inText5.nextDouble());
-        }
+        while(weightsFile.hasNext())
+            weights.add(weightsFile.nextDouble());
+        while(maxminFile.hasNext())
+            maxmin.add(maxminFile.nextDouble());
         
-        max1 = mm.get(0);
-        max2 = mm.get(1);
-        max3 = mm.get(2);
-        max4 = mm.get(3);
-        min1 = mm.get(4);
-        min2 = mm.get(5);
-        min3 = mm.get(6);
-        min4 = mm.get(7);
+        flowMax = maxmin.get(0);
+        rainfallMax = maxmin.get(1);
+        tideMax = maxmin.get(2);
+        salinityMax = maxmin.get(3);
+        flowMin = maxmin.get(4);
+        rainfallMin = maxmin.get(5);
+        tideMin = maxmin.get(6);
+        salinityMin = maxmin.get(7);
         
         inputs = new double [1][3];
         resultOutputs = new double[1][1];
-
-        inputs[0][0] = (q - min1) / (max1 - min1);
-        inputs[0][1] = (r - min2) / (max2 - min2);
-        inputs[0][2] = (t - min3) / (max3 - min3);
-        
-        
+		 
+		// weight the input data appropriately
+        inputs[0][0] = (q - flowMin) / (flowMax - flowMin);
+        inputs[0][1] = (r - rainfallMin) / (rainfallMax - rainfallMin);
+        inputs[0][2] = (t - tideMin) / (tideMax - tideMin);
         
         this.layers = new int[] { input, hidden, output };
         df = new DecimalFormat("#.0#");
@@ -117,11 +112,9 @@ public class Forecast
             }
         }
 
-        for(Neuron neuron : hiddenLayer)
-        {
+        for(Neuron neuron : hiddenLayer) {
             ArrayList<Connection> connections = neuron.getAllInConnections();
-            for(Connection conn : connections)
-            {
+            for(Connection conn : connections) {
                 double newWeight = weights.get(marker);
                 conn.setWeight(newWeight);
                 marker++;
@@ -143,40 +136,27 @@ public class Forecast
     
     }
 
-    public void setInput(double inputs[])
-    {
+    public void setInput(double inputs[]) {
         for(int i = 0; i < inputLayer.size(); i++)
-        {
             inputLayer.get(i).setOutput(inputs[i]);
-        }
     }
     
-    public double[] getOutput()
-    {
+    public double[] getOutput() {
         double[] outputs = new double[outputLayer.size()];
         for(int i = 0; i < outputLayer.size(); i++)
-        {
             outputs[i] = outputLayer.get(i).getOutput();
-        }
         return outputs;
     }
     
-    public void activate()
-    {
+    public void activate() {
         for(Neuron n : hiddenLayer)
-        {
             n.calculateOutput();
-        }
         for(Neuron n : outputLayer)
-        {
             n.calculateOutput();
-        }
     }
     
-    public void run()
-    {
-        for(int p = 0; p < inputs.length; p++)
-        {
+    public void run() {
+        for(int p = 0; p < inputs.length; p++) {
             setInput(inputs[p]);
             activate();
             
@@ -186,15 +166,19 @@ public class Forecast
         printResult();
     }
     
-    public void printResult()
-    {
+	/**
+	  * Print the results of the forecast.
+	  *
+	  * If the salinity is too low (less than 10 psu), provide plausible explanations
+	  * If the salinity is too high (higher than 10 psu), provide plausible explanation
+	  */
+    public void printResult() {
         System.out.println("Predicted Salinity Result:");
 		double salinity = 0.0;
-        for(int p = 0; p < inputs.length; p++)
-        {               
-            for(int x = 0; x < layers[2]; x++)
-            {
-				salinity = resultOutputs[p][x] * (max4-min4) + min4;
+        for(int p = 0; p < inputs.length; p++) {               
+            for(int x = 0; x < layers[2]; x++) {
+				// weight the salinity back to normal
+				salinity = resultOutputs[p][x] * (salinityMax-salinityMin) + salinityMin;
                 System.out.print(salinity + " psu ");
             }
             System.out.println();

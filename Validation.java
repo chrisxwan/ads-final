@@ -1,11 +1,14 @@
-
-/*
- * This class imports the weights learned from the RM6Network class and builds 
- * the Artificial Neural Network corresponding to those weights. Then, importing existing data
- * for flow, rainfall and tide, this class hindcasts salinity back to 1971.
- * 
- * @author Christopher Wan
- */
+/** 
+  * Validation.java
+  * @author Christopher Wan
+  *
+  * This class imports the weights learned from the Network class and builds the
+  * Artificial Neural Network corresponding to those weights.
+  *
+  * The resulting network can be used to test the training results from Network.java
+  * The neural network predicts salinity for the St. Lucie River at the US-1 bridge.
+  * 
+  */
 import java.text.*;
 import java.util.*;
 import java.io.*;
@@ -16,11 +19,13 @@ public class Validation {
     final Neuron bias = new Neuron();
     final int[] layers;
     final DecimalFormat df;
+	
+	// inputs
     final double inputs[][];
+
+	// corresponding outputs
     double[][] resultOutputs;
     double[] output;
-    final double learningRate = 1f;
-    final double momentum = 0.1f;
     
     double flowMax, rainfallMax, tideMax, salinityMax;
     double flowMin, rainfallMin, tideMin, salinityMin;
@@ -29,7 +34,18 @@ public class Validation {
         Validation validation = new Validation(3, 5, 1, "flowMA.test", "rainfall.test", "tide.test", "weights.data", "maxmin.data");
         validation.run();
     }
-    
+   
+    /** 
+	  * Object to test the already-trained neural network.
+	  * @param input: # of input neurons
+	  * @param hidden: # of hidden neurons
+	  * @param output: # of output neurons
+	  * @param i1: String for name of file to read first input (flow)
+	  * @param i2: String for name of file to read second input (rainfall)
+	  * @param i3: String for name of file to read third input (tide)
+	  * @param weight: String for name of file to read weights
+	  * @param maxminStr: String for name of file to read mins and maxes of data
+	  */
     public Validation(int input, int hidden, int output, String i1, String i2, String i3, String weight, String maxminStr) throws IOException {
         int marker = 0;
         
@@ -139,11 +155,16 @@ public class Validation {
     
     }
 
+	/** Set all the inputs to the neural network
+     * 
+     * @param inputs: array of inputs for a particular neuron
+     */
     public void setInput(double inputs[]) {
         for(int i = 0; i < inputLayer.size(); i++)
             inputLayer.get(i).setOutput(inputs[i]);
     }
     
+	/** Get the outputs for a run of the neural network */
     public double[] getOutput() {
         double[] outputs = new double[outputLayer.size()];
         for(int i = 0; i < outputLayer.size(); i++)
@@ -151,13 +172,20 @@ public class Validation {
         return outputs;
     }
     
+
+	/**
+     * Calculate the output of the neural network based on the input
+     */
     public void activate() {
         for(Neuron n : hiddenLayer)
             n.calculateOutput();
         for(Neuron n : outputLayer)
             n.calculateOutput();
     }
-    
+   
+   	/** Run the neural network with the following steps:
+	  * set the inputs, activate, get the outputs, print the results to a file
+	  */
     public void run() throws IOException {
         for(int p = 0; p < inputs.length; p++) {
             setInput(inputs[p]);
@@ -169,6 +197,9 @@ public class Validation {
         printResult("testing.data");
     }
     
+	/** Print the predicted salinity results to a a file
+	  * @param fileName: String of file name to write to
+	  */
     public void printResult(String fileName) throws IOException {
 		PrintWriter outFile = new PrintWriter(new FileWriter(fileName));
         System.out.println("Testing Results stored in file " + fileName + "\n");

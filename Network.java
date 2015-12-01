@@ -1,20 +1,17 @@
-/* Network.java
- * @author Christopher Wan
- *
- * Artificial neural network that learns the salinity
- * process for the St. Lucie River at the US-1 bridge.
- * 
- * 
- */
+/** 
+  * Network.java
+  * @author Christopher Wan
+  *
+  * Artificial neural network that learns the salinity
+  * process for the St. Lucie River at the US-1 bridge.
+  * 
+  * 
+  */
 import java.text.*;
 import java.util.*;
 import java.io.*;
 
 public class Network {
-    static {
-        Locale.setDefault(Locale.ENGLISH);
-    }
-
     final DecimalFormat df;
     final Random rand = new Random();
     final ArrayList<Neuron> inputLayer = new ArrayList<Neuron>();
@@ -51,6 +48,17 @@ public class Network {
         double minErrorCondition = 0.001; // stop training if this error is achieved
         nn.run(maxRuns, minErrorCondition);
     }
+
+	/**
+	  * Object to train the neural network.
+	  * @param input: # of input neurons
+	  * @param hidden: # of hidden neurons
+	  * @param output: # of output neurons
+	  * @param i1: String for name of file to read first input (flow)
+	  * @param i2: String for name of file to read second input (rainfall)
+	  * @param i3: String for name of file to read third input (tide)
+	  * @param o1: String for name of file to read training output (salinity)
+	  */
 
     public Network(int input, int hidden, int output, String i1, String i2, String i3, String o1) throws IOException {
         PrintWriter outFile = new PrintWriter(new FileWriter("maxmin.data"));
@@ -209,7 +217,7 @@ public class Network {
 
     /** Set all the inputs to the neural network
      * 
-     * @param inputs: Set all the inputs
+     * @param inputs: array of inputs for a particular neuron
      */
     public void setInput(double inputs[]) {
         for (int i = 0; i < inputLayer.size(); i++) {
@@ -299,9 +307,9 @@ public class Network {
     }
 
 	/** Train the neural network and write the results to files.
-	 * @param maxSteps: max number of trials for the neural network to run
-	 * @param inError: minimum error such that once achieved, the network stops running
-	 */
+	  * @param maxSteps: max number of trials for the neural network to run
+	  * @param inError: minimum error such that once achieved, the network stops running
+	  */
     void run(int maxSteps, double minError) throws IOException {
         int i;
         int counter = 0;
@@ -343,7 +351,7 @@ public class Network {
 
 
     /** Print the predicted salinity results to a a file
-	  * @param fileName: file to write to
+	  * @param fileName: String of file name to write to
 	  */
     void printResult(String fileName) throws IOException {
 		PrintWriter outFile = new PrintWriter(new FileWriter(fileName));
@@ -358,7 +366,7 @@ public class Network {
     }
     
 	/** Print all of the weights from the trained neural network to a file
-	  * @param fileName: file to write to
+	  * @param fileName: String of file name to write to
 	  */
     public void printAllWeights(String fileName) throws IOException {
 		System.out.println("Weights written to file: " + fileName);
