@@ -21,6 +21,7 @@ datesTest = []
 salinityTrain = []
 salinityTest = []
 
+# read all data from files into lists
 training = [line.strip('\n') for line in open(trainingFile)]
 testing = [line.strip('\n') for line in open(testingFile)]
 datesTrain = [line.strip('\n') for line in open(datesTrainFile)]
@@ -30,9 +31,10 @@ salinityTest = [line.strip('\n') for line in open(salinityTestFile)]
 
 
 counter = 0
-trainingCSV = []
-testingCSV = []
+trainingCSV = [] # list for all results from training data
+testingCSV = []  # list for all results from testing data
 
+# populate training data
 for entry in training:
 	csvEntry = []
 	csvEntry.append(datesTrain[counter])
@@ -43,6 +45,7 @@ for entry in training:
 
 counter = 0
 
+# populate testing data
 for entry in testing:
 	csvEntry = []
 	csvEntry.append(datesTest[counter])
@@ -51,19 +54,21 @@ for entry in testing:
 	testingCSV.append(csvEntry)
 	counter += 1
 
+# write training data out to CSV
 with open('training-results.csv', 'w') as out:
 	csv_out = csv.writer(out)
 	csv_out.writerow(['Date', 'Predicted', 'Observed'])
 	for csvEntry in trainingCSV:
 		csv_out.writerow(csvEntry)
 
+# write testing data out to CSV
 with open('testing-results.csv', 'w') as out:
 	csv_out = csv.writer(out)
 	csv_out.writerow(['Date', 'Predicted', 'Observed'])
 	for csvEntry in testingCSV:
 		csv_out.writerow(csvEntry)
 
-
+# print out R^2 values
 r2train = rsquared([float(elt) for elt in training], [float(elt) for elt in salinityTrain])
 r2test = rsquared([float(elt) for elt in testing], [float(elt) for elt in salinityTest])
 print "Training results stored in training-results.csv"

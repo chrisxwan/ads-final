@@ -22,16 +22,16 @@ public class Network {
     final int randomWeightMultiplier = 1;
 
     final double epsilon = 0.000000001;
-
-    final double learningRate = 0.5f;
-    final double momentum = 0.1f;
+	
+    final double learningRate = 0.3f; // optimum learning rate for process
+    final double momentum = 0.1f;	  // optimum momentum for process
 
     // Inputs 
     final double inputs[][];
 
     // Corresponding outputs
     final double expectedOutputs[][];
-    double resultOutputs[][]; // dummy init
+    double resultOutputs[][]; 
     double output[];
     
 	// weight the inputs and output with the equation:

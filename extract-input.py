@@ -2,6 +2,7 @@ import csv
 
 data = []
 firstLine = 0
+# read csv into list
 with open('training-data.csv') as f:
 	cr = csv.reader(f.read().splitlines())
 	for line in cr:
@@ -9,7 +10,7 @@ with open('training-data.csv') as f:
 			data.append(line)
 		firstLine = 1
 
-
+# create files for all the training data
 tideTrain = open('tide.train', 'w')
 rainfallTrain = open('rainfall.train', 'w')
 flowTrain = open('flow.train', 'w')
@@ -18,6 +19,7 @@ rainMATrain = open('rainMA.train', 'w')
 salinityTrain = open('salinity.train', 'w')
 datesTrain = open('dates.train', 'w')
 
+# create files for all the testing data
 tideTest = open('tide.test', 'w')
 flowTest = open('flow.test', 'w')
 rainfallTest = open('rainfall.test', 'w')
@@ -27,6 +29,9 @@ datesTest = open('dates.test', 'w')
 salinityTest = open('salinity.test', 'w')
 flowQueue = []
 rainQueue = []
+
+# variables used to calculate moving averages 
+# for flow and rainfall
 flowSum = 0
 rainSum = 0
 flowMovingAverage = 10
@@ -55,6 +60,7 @@ for line in data:
 trainingCounter = len(salinityList) / 2
 counter = 0
 
+# write all the data
 for line in allData:
 	currFlowMA = float(line[3])
 	currRainMA = float(line[2])
