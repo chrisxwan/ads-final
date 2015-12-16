@@ -1,9 +1,11 @@
 /**
+  * Forecast.java
+  * @author Christopher Wan
+  *
   * This class imports the weights learned from the Network class and builds 
   * the Artificial Neural Network corresponding to those weights. It allows users to
-  * forecast the salinity at RM6 given input prompts.
+  * forecast the salinity at the St. Lucie River given input prompts.
   * 
-  * @author Christopher Wan 
   */
 import java.text.*;
 import java.util.*;
@@ -136,18 +138,28 @@ public class Forecast
     
     }
 
+	/** Set all the inputs to the neural network
+	  * 
+	  * @param inputs: array of inputs for a particular neuron
+	  */
     public void setInput(double inputs[]) {
         for(int i = 0; i < inputLayer.size(); i++)
             inputLayer.get(i).setOutput(inputs[i]);
     }
-    
+   
+    /** 
+	  *Get the outputs for a run of the neural network
+	  */
     public double[] getOutput() {
         double[] outputs = new double[outputLayer.size()];
         for(int i = 0; i < outputLayer.size(); i++)
             outputs[i] = outputLayer.get(i).getOutput();
         return outputs;
     }
-    
+   
+    /** 
+	  * Calculate all the outputs of the neural network
+	  */
     public void activate() {
         for(Neuron n : hiddenLayer)
             n.calculateOutput();
@@ -155,6 +167,9 @@ public class Forecast
             n.calculateOutput();
     }
     
+	/** Run the neural network with the following steps:
+	  * set the inputs, activate, get the outputs, print the results to a file
+	  */
     public void run() {
         for(int p = 0; p < inputs.length; p++) {
             setInput(inputs[p]);
@@ -184,11 +199,11 @@ public class Forecast
             System.out.println();
         }
 		if(salinity < 10) {
-			System.out.println("The salinity is too low, which will result in the death of organisms that are intolerant to freshwater. This may be caused by an excess of freshwater inflows or rainfall, or unusually low tide levels. To increase salinity, less water should be discharged from Lake Okeechobee.");
+			System.out.println("The salinity at the St. Lucie River is too low, which will result in the death of organisms that are intolerant to freshwater. This may be caused by an excess of freshwater inflows or rainfall, or unusually low tide levels. To increase salinity, less water should be discharged from Lake Okeechobee.");
 		} else if(salinity > 10 && salinity < 30) {
-			System.out.println("The salinity is at optimum levels to sustain the ecosystem.");
+			System.out.println("The salinity is at optimum levels to sustain the ecosystem in the St. Lucie River.");
 		} else {
-			System.out.println("The salinity is too high, which will result in the death of organisms that cannot sustain life in salinity levels that are beyond that of brackish water. This may be caused by a lack of freshwater inflows or rainfall, or unusually high tide levels. To decrease salinity, more water should be discharged from Lake Okeechobee.");
+			System.out.println("The salinity is too high at the St. Lucie River, which will result in the death of organisms that cannot sustain life in salinity levels that are beyond that of brackish water. This may be caused by a lack of freshwater inflows or rainfall, or unusually high tide levels. To decrease salinity, more water should be discharged from Lake Okeechobee.");
 		}
     }
         

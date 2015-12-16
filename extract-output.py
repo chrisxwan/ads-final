@@ -1,3 +1,6 @@
+# extract-output.py
+# author: Christopher Wan
+
 import csv
 import scipy.stats
 

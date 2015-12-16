@@ -1,9 +1,12 @@
+# extract-input.py
+# author: Christopher Wan
+
 import csv
 
 data = []
 firstLine = 0
 # read csv into list
-with open('training-data.csv') as f:
+with open('master-data.csv') as f:
 	cr = csv.reader(f.read().splitlines())
 	for line in cr:
 		if(firstLine == 1):

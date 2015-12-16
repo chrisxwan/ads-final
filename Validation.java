@@ -164,7 +164,9 @@ public class Validation {
             inputLayer.get(i).setOutput(inputs[i]);
     }
     
-	/** Get the outputs for a run of the neural network */
+	/** 
+	  * Get the outputs for a run of the neural network
+	  */
     public double[] getOutput() {
         double[] outputs = new double[outputLayer.size()];
         for(int i = 0; i < outputLayer.size(); i++)
