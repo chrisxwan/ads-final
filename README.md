@@ -8,7 +8,7 @@ The objective of this study is to develop Artificial Neural Networks (ANNs) to p
 
 ####NOTE: Number of hidden neurons and the values of the learning rate and momentum depend dynamically on the process it is modeling.
 
-I have included code (Connection.java and Neuron.java) to simulate the network. 
+I have included code (Connection.java and Neuron.java) to simulate the network. I have included comments in the code to describe functionality.
 
 In the St. Lucie River, higher levels of freshwater inflow and higher levels of rainfall will lead to decreased salinity while higher levels of tide will result in increased salinity; however, the exact levels of salinity change are not always predictable, which makes ANNs an ideal tool for modeling and decision making. The neural network that I developed has 3 input neurons (10-day moving average flow (in cubic feet per second), 5-day moving average rainfall level (in millimeters), and tide level (in cubic feet)) and 1 output neuron (salinity level at US-1 bridge (in psu)). Based on various testing and comparisons, the optimum number of hidden neurons is 5, the optimum learning rate is 0.3, and the optimum momentum is 0.1.
 

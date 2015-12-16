@@ -10,8 +10,8 @@ public class Connection {
 	double prevDeltaWeight = 0; // for momentum
 	double deltaWeight = 0;
 
-	final Neuron leftNeuron;
-	final Neuron rightNeuron;
+	final Neuron leftNeuron; // from
+	final Neuron rightNeuron; // to
 	static int counter = 0;
 	final public int id; // auto increment, starts at 0
 

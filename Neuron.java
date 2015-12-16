@@ -12,9 +12,9 @@ public class Neuron {
 	Connection biasConnection;
 	final double bias = -1;
 	double output;
-	
-	ArrayList<Connection> Inconnections = new ArrayList<Connection>();
-	HashMap<Integer,Connection> connectionLookup = new HashMap<Integer,Connection>();
+
+	ArrayList<Connection> Inconnections = new ArrayList<Connection>(); // all connections going into this neuron
+	HashMap<Integer,Connection> connectionLookup = new HashMap<Integer,Connection>(); // hashmap of all (neuron #, connection) pairs
 	
 	public Neuron(){		
 		id = counter;
@@ -47,6 +47,10 @@ public class Neuron {
 		return 1.0 / (1.0 +  (Math.exp(-x)));
 	}
 	
+	/** Make new connections and add them to all connections
+	  *
+	  * @param inNeurons: ArrayList of neurons coming in to this current neuron
+	  */
 	public void addInConnectionsS(ArrayList<Neuron> inNeurons){
 		for(Neuron n: inNeurons){
 			Connection con = new Connection(n,this);
@@ -55,6 +59,10 @@ public class Neuron {
 		}
 	}
 	
+	/** Return Connection for some neuron
+	  *
+	  * @param neuronIndex: Index of neuron in network to return connection
+	  */
 	public Connection getConnection(int neuronIndex){
 		return connectionLookup.get(neuronIndex);
 	}
@@ -62,11 +70,13 @@ public class Neuron {
 	public void addInConnection(Connection con){
 		Inconnections.add(con);
 	}
+
 	public void addBiasConnection(Neuron n){
 		Connection con = new Connection(n,this);
 		biasConnection = con;
 		Inconnections.add(con);
 	}
+
 	public ArrayList<Connection> getAllInConnections(){
 		return Inconnections;
 	}
