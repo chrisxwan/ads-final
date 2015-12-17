@@ -24,7 +24,7 @@ public class Network {
     final double epsilon = 0.000000001;
 	
     final double learningRate = 0.3f; // optimum learning rate for process
-    final double momentum = 0.9f;	  // optimum momentum for process
+    final double momentum = 0.8f;	  // optimum momentum for process
 
     // Inputs 
     final double inputs[][];
