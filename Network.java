@@ -363,6 +363,9 @@ public class Network {
             outFile.println();
         }
 		outFile.close();
+		
+		System.out.println();
+		System.out.println("Salinity can now be forecasted by running `java Forecast`");
     }
     
 	/** Print all of the weights from the trained neural network to a file
